@@ -1,0 +1,280 @@
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Grid,
+  Icon,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  Progress,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Badge,
+  Card,
+  CardBody,
+} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Video,
+  Plus,
+  TrendingUp,
+  DollarSign,
+  Eye,
+  PlayCircle,
+  Settings,
+  LogOut,
+  BarChart3,
+  Clock,
+  CheckCircle,
+} from 'lucide-react';
+import { faker } from '@faker-js/faker';
+
+function Dashboard() {
+  const navigate = useNavigate();
+
+  const stats = [
+    {
+      label: 'Total Videos',
+      value: '24',
+      change: '+3',
+      changeType: 'increase',
+      icon: Video,
+      color: 'brand.500',
+    },
+    {
+      label: 'Total Views',
+      value: '128.5K',
+      change: '+12.5%',
+      changeType: 'increase',
+      icon: Eye,
+      color: 'purple.500',
+    },
+    {
+      label: 'This Month',
+      value: '$2,847',
+      change: '+18.2%',
+      changeType: 'increase',
+      icon: DollarSign,
+      color: 'green.500',
+    },
+    {
+      label: 'Engagement',
+      value: '94.2%',
+      change: '+2.1%',
+      changeType: 'increase',
+      icon: TrendingUp,
+      color: 'orange.500',
+    },
+  ];
+
+  const recentVideos = Array.from({ length: 6 }, (_, i) => ({
+    id: i + 1,
+    title: faker.lorem.sentence(6),
+    views: faker.number.int({ min: 1000, max: 50000 }),
+    earnings: faker.number.float({ min: 10, max: 500, precision: 0.01 }),
+    status: i < 4 ? 'published' : 'processing',
+    createdAt: faker.date.recent({ days: 7 }),
+    thumbnail: `https://img-wrapper.vercel.app/image?url=https://placehold.co/320x180/6366f1/ffffff?text=Video+${i + 1}`,
+  }));
+
+  return (
+    <Box minH="100vh" bg="gray.50">
+      <Box bg="white" borderBottom="1px" borderColor="gray.200">
+        <Container maxW="container.xl">
+          <Flex py={4} justify="space-between" align="center">
+            <HStack spacing={2} cursor="pointer" onClick={() => navigate('/')}>
+              <Icon as={Video} boxSize={8} color="brand.600" />
+              <Heading size="md" bgGradient="linear(to-r, brand.600, accent.600)" bgClip="text">
+                VideoAI Pro
+              </Heading>
+            </HStack>
+            <HStack spacing={4}>
+              <Button
+                variant="ghost"
+                leftIcon={<BarChart3 size={18} />}
+                onClick={() => navigate('/analytics')}
+              >
+                Analytics
+              </Button>
+              <Button
+                variant="ghost"
+                leftIcon={<Video size={18} />}
+                onClick={() => navigate('/templates')}
+              >
+                Templates
+              </Button>
+              <Menu>
+                <MenuButton>
+                  <Avatar size="sm" name="User Name" bg="brand.500" />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem icon={<Settings size={16} />}>Settings</MenuItem>
+                  <MenuItem icon={<LogOut size={16} />}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            </HStack>
+          </Flex>
+        </Container>
+      </Box>
+
+      <Container maxW="container.xl" py={8}>
+        <VStack spacing={8} align="stretch">
+          <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
+            <VStack align="start" spacing={1}>
+              <Heading size="lg">Dashboard</Heading>
+              <Text color="gray.600">Welcome back! Here's your video performance overview</Text>
+            </VStack>
+            <Button
+              colorScheme="brand"
+              size="lg"
+              leftIcon={<Plus />}
+              onClick={() => navigate('/create')}
+              boxShadow="md"
+            >
+              Create New Video
+            </Button>
+          </Flex>
+
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+            {stats.map((stat, index) => (
+              <Card key={index}>
+                <CardBody>
+                  <Flex justify="space-between" align="start" mb={4}>
+                    <Stat>
+                      <StatLabel fontSize="sm" color="gray.600">
+                        {stat.label}
+                      </StatLabel>
+                      <StatNumber fontSize="2xl" mt={2}>
+                        {stat.value}
+                      </StatNumber>
+                      <StatHelpText mb={0}>
+                        <StatArrow type={stat.changeType} />
+                        {stat.change}
+                      </StatHelpText>
+                    </Stat>
+                    <Flex
+                      bg={`${stat.color.replace('.500', '.50')}`}
+                      p={3}
+                      borderRadius="lg"
+                      align="center"
+                      justify="center"
+                    >
+                      <Icon as={stat.icon} boxSize={5} color={stat.color} />
+                    </Flex>
+                  </Flex>
+                </CardBody>
+              </Card>
+            ))}
+          </SimpleGrid>
+
+          <Box>
+            <Flex justify="space-between" align="center" mb={6}>
+              <Heading size="md">Recent Videos</Heading>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/templates')}>
+                View All
+              </Button>
+            </Flex>
+
+            <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+              {recentVideos.map((video) => (
+                <Card key={video.id} overflow="hidden" _hover={{ boxShadow: 'lg' }} transition="all 0.3s">
+                  <Box position="relative">
+                    <Box
+                      as="img"
+                      src={video.thumbnail}
+                      alt={video.title}
+                      w="full"
+                      h="180px"
+                      objectFit="cover"
+                    />
+                    <Flex
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      right={0}
+                      bottom={0}
+                      bg="blackAlpha.400"
+                      align="center"
+                      justify="center"
+                      opacity={0}
+                      _hover={{ opacity: 1 }}
+                      transition="opacity 0.3s"
+                      cursor="pointer"
+                    >
+                      <Icon as={PlayCircle} boxSize={12} color="white" />
+                    </Flex>
+                    <Badge
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      colorScheme={video.status === 'published' ? 'green' : 'orange'}
+                    >
+                      {video.status === 'published' ? 'Published' : 'Processing'}
+                    </Badge>
+                  </Box>
+                  <CardBody>
+                    <VStack align="start" spacing={3}>
+                      <Text fontWeight="semibold" noOfLines={2} minH="48px">
+                        {video.title}
+                      </Text>
+                      <HStack w="full" justify="space-between">
+                        <HStack spacing={1} color="gray.600" fontSize="sm">
+                          <Icon as={Eye} boxSize={4} />
+                          <Text>{video.views.toLocaleString()}</Text>
+                        </HStack>
+                        <Text fontWeight="bold" color="green.600" fontSize="sm">
+                          ${video.earnings.toFixed(2)}
+                        </Text>
+                      </HStack>
+                      <Text fontSize="xs" color="gray.500">
+                        {video.createdAt.toLocaleDateString()}
+                      </Text>
+                    </VStack>
+                  </CardBody>
+                </Card>
+              ))}
+            </Grid>
+          </Box>
+
+          <Card>
+            <CardBody>
+              <VStack align="start" spacing={4}>
+                <Flex justify="space-between" w="full" align="center">
+                  <VStack align="start" spacing={1}>
+                    <Heading size="sm">Monthly Goal Progress</Heading>
+                    <Text fontSize="sm" color="gray.600">
+                      Earn $5,000 this month
+                    </Text>
+                  </VStack>
+                  <Text fontSize="2xl" fontWeight="bold" color="brand.600">
+                    $2,847
+                  </Text>
+                </Flex>
+                <Box w="full">
+                  <Progress value={57} colorScheme="brand" borderRadius="full" size="lg" />
+                  <Text fontSize="sm" color="gray.600" mt={2}>
+                    57% complete - Keep going!
+                  </Text>
+                </Box>
+              </VStack>
+            </CardBody>
+          </Card>
+        </VStack>
+      </Container>
+    </Box>
+  );
+}
+
+export default Dashboard;

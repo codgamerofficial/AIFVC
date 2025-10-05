@@ -1,0 +1,26 @@
+import { ChakraProvider } from '@chakra-ui/react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import theme from './theme';
+import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard';
+import CreateVideo from './pages/CreateVideo';
+import Templates from './pages/Templates';
+import Analytics from './pages/Analytics';
+
+function App() {
+  return (
+    <ChakraProvider theme={theme}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create" element={<CreateVideo />} />
+          <Route path="/templates" element={<Templates />} />
+          <Route path="/analytics" element={<Analytics />} />
+        </Routes>
+      </Router>
+    </ChakraProvider>
+  );
+}
+
+export default App;

@@ -1,0 +1,251 @@
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Icon,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  Card,
+  CardBody,
+  Select,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Badge,
+} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Video, DollarSign, Eye, TrendingUp, Calendar } from 'lucide-react';
+import { faker } from '@faker-js/faker';
+
+function Analytics() {
+  const navigate = useNavigate();
+
+  const stats = [
+    {
+      label: 'Total Earnings',
+      value: '$8,247',
+      change: '+23.5%',
+      changeType: 'increase',
+      icon: DollarSign,
+    },
+    {
+      label: 'Total Views',
+      value: '385K',
+      change: '+18.2%',
+      changeType: 'increase',
+      icon: Eye,
+    },
+    {
+      label: 'Avg. Per Video',
+      value: '$343',
+      change: '+12.1%',
+      changeType: 'increase',
+      icon: TrendingUp,
+    },
+    {
+      label: 'This Month',
+      value: '$2,847',
+      change: '+28.7%',
+      changeType: 'increase',
+      icon: Calendar,
+    },
+  ];
+
+  const topVideos = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    title: faker.lorem.sentence(6),
+    views: faker.number.int({ min: 5000, max: 100000 }),
+    earnings: faker.number.float({ min: 50, max: 800, precision: 0.01 }),
+    platform: ['YouTube', 'TikTok', 'Instagram'][i % 3],
+    ctr: faker.number.float({ min: 3.5, max: 8.5, precision: 0.1 }),
+  }));
+
+  return (
+    <Box minH="100vh" bg="gray.50">
+      <Box bg="white" borderBottom="1px" borderColor="gray.200">
+        <Container maxW="container.xl">
+          <Flex py={4} justify="space-between" align="center">
+            <HStack spacing={2} cursor="pointer" onClick={() => navigate('/dashboard')}>
+              <Icon as={Video} boxSize={8} color="brand.600" />
+              <Heading size="md" bgGradient="linear(to-r, brand.600, accent.600)" bgClip="text">
+                VideoAI Pro
+              </Heading>
+            </HStack>
+            <Button colorScheme="brand" onClick={() => navigate('/create')}>
+              Create Video
+            </Button>
+          </Flex>
+        </Container>
+      </Box>
+
+      <Container maxW="container.xl" py={8}>
+        <VStack spacing={8} align="stretch">
+          <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
+            <VStack align="start" spacing={1}>
+              <Heading size="lg">Analytics Dashboard</Heading>
+              <Text color="gray.600">Track your earnings and video performance</Text>
+            </VStack>
+            <Select maxW="200px" bg="white">
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="365">Last year</option>
+            </Select>
+          </Flex>
+
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+            {stats.map((stat, index) => (
+              <Card key={index}>
+                <CardBody>
+                  <Stat>
+                    <Flex justify="space-between" align="start" mb={2}>
+                      <VStack align="start" spacing={1}>
+                        <StatLabel fontSize="sm" color="gray.600">
+                          {stat.label}
+                        </StatLabel>
+                        <StatNumber fontSize="2xl">{stat.value}</StatNumber>
+                        <StatHelpText mb={0}>
+                          <StatArrow type={stat.changeType} />
+                          {stat.change}
+                        </StatHelpText>
+                      </VStack>
+                      <Flex
+                        bg="brand.50"
+                        p={3}
+                        borderRadius="lg"
+                        align="center"
+                        justify="center"
+                      >
+                        <Icon as={stat.icon} boxSize={5} color="brand.600" />
+                      </Flex>
+                    </Flex>
+                  </Stat>
+                </CardBody>
+              </Card>
+            ))}
+          </SimpleGrid>
+
+          <Card>
+            <CardBody>
+              <VStack align="stretch" spacing={4}>
+                <Heading size="md">Top Performing Videos</Heading>
+                <Box overflowX="auto">
+                  <Table variant="simple">
+                    <Thead>
+                      <Tr>
+                        <Th>Video Title</Th>
+                        <Th>Platform</Th>
+                        <Th isNumeric>Views</Th>
+                        <Th isNumeric>CTR</Th>
+                        <Th isNumeric>Earnings</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {topVideos.map((video) => (
+                        <Tr key={video.id} _hover={{ bg: 'gray.50' }}>
+                          <Td maxW="300px">
+                            <Text noOfLines={1}>{video.title}</Text>
+                          </Td>
+                          <Td>
+                            <Badge
+                              colorScheme={
+                                video.platform === 'YouTube'
+                                  ? 'red'
+                                  : video.platform === 'TikTok'
+                                  ? 'purple'
+                                  : 'pink'
+                              }
+                            >
+                              {video.platform}
+                            </Badge>
+                          </Td>
+                          <Td isNumeric>{video.views.toLocaleString()}</Td>
+                          <Td isNumeric>{video.ctr}%</Td>
+                          <Td isNumeric fontWeight="bold" color="green.600">
+                            ${video.earnings.toFixed(2)}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </Box>
+              </VStack>
+            </CardBody>
+          </Card>
+
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+            <Card>
+              <CardBody>
+                <VStack align="stretch" spacing={4}>
+                  <Heading size="md">Revenue by Platform</Heading>
+                  <VStack align="stretch" spacing={3}>
+                    <Flex justify="space-between" align="center">
+                      <HStack>
+                        <Badge colorScheme="red">YouTube</Badge>
+                      </HStack>
+                      <Text fontWeight="bold" color="green.600">
+                        $4,520
+                      </Text>
+                    </Flex>
+                    <Flex justify="space-between" align="center">
+                      <HStack>
+                        <Badge colorScheme="purple">TikTok</Badge>
+                      </HStack>
+                      <Text fontWeight="bold" color="green.600">
+                        $2,180
+                      </Text>
+                    </Flex>
+                    <Flex justify="space-between" align="center">
+                      <HStack>
+                        <Badge colorScheme="pink">Instagram</Badge>
+                      </HStack>
+                      <Text fontWeight="bold" color="green.600">
+                        $1,547
+                      </Text>
+                    </Flex>
+                  </VStack>
+                </VStack>
+              </CardBody>
+            </Card>
+
+            <Card>
+              <CardBody>
+                <VStack align="stretch" spacing={4}>
+                  <Heading size="md">Best Performing Niches</Heading>
+                  <VStack align="stretch" spacing={3}>
+                    <Flex justify="space-between" align="center">
+                      <Text>Motivation</Text>
+                      <Badge colorScheme="green">38% of earnings</Badge>
+                    </Flex>
+                    <Flex justify="space-between" align="center">
+                      <Text>Finance</Text>
+                      <Badge colorScheme="blue">27% of earnings</Badge>
+                    </Flex>
+                    <Flex justify="space-between" align="center">
+                      <Text>Psychology</Text>
+                      <Badge colorScheme="purple">18% of earnings</Badge>
+                    </Flex>
+                  </VStack>
+                </VStack>
+              </CardBody>
+            </Card>
+          </SimpleGrid>
+        </VStack>
+      </Container>
+    </Box>
+  );
+}
+
+export default Analytics;

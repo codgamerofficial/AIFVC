@@ -1,0 +1,163 @@
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Icon,
+  Grid,
+  Card,
+  CardBody,
+  Badge,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+} from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Video, Search, Filter, PlayCircle, TrendingUp, Sparkles } from 'lucide-react';
+import { faker } from '@faker-js/faker';
+
+function Templates() {
+  const navigate = useNavigate();
+
+  const templates = Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1,
+    title: faker.lorem.sentence(5),
+    category: ['Motivation', 'Finance', 'History', 'Science', 'Psychology', 'Philosophy'][
+      i % 6
+    ],
+    views: faker.number.int({ min: 10000, max: 500000 }),
+    rating: faker.number.float({ min: 4.5, max: 5.0, precision: 0.1 }),
+    thumbnail: `https://img-wrapper.vercel.app/image?url=https://placehold.co/400x225/6366f1/ffffff?text=Template+${i + 1}`,
+    isPremium: i % 3 === 0,
+  }));
+
+  const categories = ['All', 'Motivation', 'Finance', 'History', 'Science', 'Psychology', 'Philosophy'];
+
+  return (
+    <Box minH="100vh" bg="gray.50">
+      <Box bg="white" borderBottom="1px" borderColor="gray.200">
+        <Container maxW="container.xl">
+          <Flex py={4} justify="space-between" align="center">
+            <HStack spacing={2} cursor="pointer" onClick={() => navigate('/dashboard')}>
+              <Icon as={Video} boxSize={8} color="brand.600" />
+              <Heading size="md" bgGradient="linear(to-r, brand.600, accent.600)" bgClip="text">
+                VideoAI Pro
+              </Heading>
+            </HStack>
+            <Button colorScheme="brand" onClick={() => navigate('/create')}>
+              Create Video
+            </Button>
+          </Flex>
+        </Container>
+      </Box>
+
+      <Container maxW="container.xl" py={8}>
+        <VStack spacing={8} align="stretch">
+          <VStack spacing={2} textAlign="center">
+            <Heading size="xl">Video Templates</Heading>
+            <Text color="gray.600" fontSize="lg">
+              Choose from our library of proven templates and customize them to your needs
+            </Text>
+          </VStack>
+
+          <Flex gap={4} flexWrap="wrap">
+            <InputGroup maxW={{ base: 'full', md: '400px' }}>
+              <InputLeftElement pointerEvents="none">
+                <Icon as={Search} color="gray.400" />
+              </InputLeftElement>
+              <Input placeholder="Search templates..." bg="white" />
+            </InputGroup>
+            <Select maxW={{ base: 'full', md: '200px' }} bg="white">
+              {categories.map((cat) => (
+                <option key={cat} value={cat.toLowerCase()}>
+                  {cat}
+                </option>
+              ))}
+            </Select>
+          </Flex>
+
+          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }} gap={6}>
+            {templates.map((template) => (
+              <Card
+                key={template.id}
+                overflow="hidden"
+                _hover={{ transform: 'translateY(-4px)', boxShadow: 'xl' }}
+                transition="all 0.3s"
+                cursor="pointer"
+                onClick={() => navigate('/create')}
+              >
+                <Box position="relative">
+                  <Box
+                    as="img"
+                    src={template.thumbnail}
+                    alt={template.title}
+                    w="full"
+                    h="225px"
+                    objectFit="cover"
+                  />
+                  <Flex
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    bg="blackAlpha.400"
+                    align="center"
+                    justify="center"
+                    opacity={0}
+                    _hover={{ opacity: 1 }}
+                    transition="opacity 0.3s"
+                  >
+                    <Icon as={PlayCircle} boxSize={16} color="white" />
+                  </Flex>
+                  {template.isPremium && (
+                    <Badge
+                      position="absolute"
+                      top={2}
+                      left={2}
+                      colorScheme="purple"
+                      leftIcon={<Sparkles size={12} />}
+                    >
+                      Premium
+                    </Badge>
+                  )}
+                  <Badge position="absolute" top={2} right={2} colorScheme="green">
+                    {template.category}
+                  </Badge>
+                </Box>
+                <CardBody>
+                  <VStack align="start" spacing={3}>
+                    <Text fontWeight="semibold" noOfLines={2} minH="48px">
+                      {template.title}
+                    </Text>
+                    <HStack w="full" justify="space-between">
+                      <HStack spacing={1} fontSize="sm" color="gray.600">
+                        <Icon as={TrendingUp} boxSize={4} />
+                        <Text>{(template.views / 1000).toFixed(1)}K views</Text>
+                      </HStack>
+                      <HStack spacing={1}>
+                        <Text fontSize="sm" fontWeight="semibold">
+                          ⭐ {template.rating}
+                        </Text>
+                      </HStack>
+                    </HStack>
+                    <Button size="sm" colorScheme="brand" w="full" leftIcon={<Sparkles />}>
+                      Use Template
+                    </Button>
+                  </VStack>
+                </CardBody>
+              </Card>
+            ))}
+          </Grid>
+        </VStack>
+      </Container>
+    </Box>
+  );
+}
+
+export default Templates;
